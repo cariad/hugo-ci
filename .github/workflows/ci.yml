@@ -2,6 +2,8 @@ name: hugo-ci
 
 on:  # yamllint disable-line rule:truthy
   push:
+    branches:
+      - "**"
     tags-ignore:
       - "**"
 
