@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-hugo --source /source --destination /build
+hugo --source /src --destination /pub
 
 echo "Proofing..."
-htmlproofer /build          \
+htmlproofer /pub            \
   --allow-hash-href         \
   --check-favicon           \
   --check-html              \
@@ -23,10 +23,9 @@ fi
 
 s3_path="s3://${S3_BUCKET:?}${S3_PREFIX:=}"
 
-
 header_args=(-bucket "${S3_BUCKET:?}")
 
-usr_header_config=/source/.s3headersetter.yml
+usr_header_config=/src/.s3headersetter.yml
 sys_header_config=/config/.s3headersetter.yml
 
 if [ -f "${usr_header_config}" ]; then
