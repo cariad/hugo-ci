@@ -1,0 +1,43 @@
+name: hugo-ci
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          pull: true
+
+  validate_dockerfile:
+    container: cariad/ci:1.1.0
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate
+        run: hadolint Dockerfile
+
+  validate_scripts:
+    container: cariad/ci:1.1.0
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate
+        run: validate-shell-scripts.sh --expect 1
+
+  validate_yaml:
+    container: cariad/ci:1.1.0
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate
+        run: yamllint .
