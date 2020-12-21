@@ -1,6 +1,6 @@
-# hugo-site-ci
+# hugo-ci
 
-Docker image for continuous build, test and deploy of Hugo sites.
+A Docker image for building, testing and deploying Hugo sites.
 
 ```bash
 # Build:
