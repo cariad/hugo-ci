@@ -20,7 +20,7 @@ jobs:
 
   validate_dockerfile:
     container: cariad/ci:1.1.0
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Validate
@@ -28,7 +28,7 @@ jobs:
 
   validate_scripts:
     container: cariad/ci:1.1.0
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Validate
@@ -36,7 +36,7 @@ jobs:
 
   validate_yaml:
     container: cariad/ci:1.1.0
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Validate
