@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Validate
-        run: validate-shell-scripts
+        run: validate-shell-scripts.sh
 
   validate_yaml:
     container: cariad/ci:1.1.0
