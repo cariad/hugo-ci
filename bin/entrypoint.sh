@@ -40,8 +40,9 @@ fi
 
 if [ "${DEPLOY:=0}" == "1" ]; then
   echo "DRY RUN: Would upload to:      ${s3_path}"
-  echo "DRY RUN: Would set S3 headers: s3headersetter ${header_args[@]}"
-else
-  aws s3 sync public s3://${s3_path}
-  s3headersetter "${header_args[@]}"
+  echo "DRY RUN: Would set S3 headers: s3headersetter ${header_args[*]}"
+  exit 0
 fi
+
+aws s3 sync --delete public "s3://${s3_path:?}"
+s3headersetter "${header_args[@]}"

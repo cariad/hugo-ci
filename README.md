@@ -43,9 +43,7 @@ The key notes for running `cariad/hugo-ci` are:
     - The `S3_BUCKET` environment variable must be set to thw name of your bucket.
     - To deploy to a key prefix, set `S3_PREFIX`. Do not include a trailing slash.
 
-
-
-You can use `cariad/hugo-ci` to build, test and optionally deploy your website from your local development machine.
+This sample script will take the current working directory as the source, and the `public` subdirectory as the build destination:
 
 ```bash
 #!/bin/bash
@@ -63,7 +61,7 @@ docker run                                            \
   cariad/hugo-ci
 ```
 
-To perform a deployment too, include the `S3_BUCKET` and (is required) `S3_PREFIX` environment variables:
+To include a deployment, set the `S3_BUCKET` and (if required) `S3_PREFIX` environment variables:
 
 ```bash
 docker run                                            \
