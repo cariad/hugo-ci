@@ -46,7 +46,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
           pull: true
-          tags: $LOCAL_IMAGE_NAME
+          tags: ${{env.LOCAL_IMAGE_NAME}}
 
       - name: Test
         run: ./test-image.sh
