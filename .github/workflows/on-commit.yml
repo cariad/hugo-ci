@@ -62,6 +62,9 @@ jobs:
         run: ./test-boilerplate.sh
 
   test_image:
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     needs:
       - build
     runs-on: ubuntu-20.04
@@ -69,4 +72,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: test-image.sh
-        run: ./test-image.sh --image cariad/hugo-ci:${GITHUB_REF##*/}
+        run: ./test-image.sh
