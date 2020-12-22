@@ -18,11 +18,15 @@ BRANCH="${branch:?}" docker-compose up
 
 echo -e "${li:?}Verifying results…"
 
-function assert() {
-  expect=7
-  local expect
-  actual=$(find "${1:?}" | wc -l)
+function verify() {
   local actual
+  local expect
+
+  echo -e "${li:?}Checking \"${1:?}\"..."
+  actual=$(find "${1:?}" | wc -l)
+  echo -e "${li:?}${actual}"
+
+  expect=7
 
   if [ ! "${actual:?}" -eq "${expect:?}" ]; then
     echo -e "${nk:?}Expected ${expect:?} files in ${1:?} but found ${actual:?}."
@@ -32,14 +36,14 @@ function assert() {
   echo -e "${ok:?}${1:?} OK"
 }
 
-assert public
-assert subdirectory/public
+verify public
+verify subdirectory/public
 
 aws s3 sync s3://hugoci-test-bucket-248eadwvcive ./uploaded-root
-assert uploaded-root
+verify uploaded-root
 
 aws s3 sync "s3://hugoci-test-bucket-248eadwvcive/${GITHUB_SHA:?}" ./uploaded-subdirectory
-assert uploaded-subdirectory
+verify uploaded-subdirectory
 
 mkdir empty
 aws s3 sync --delete empty s3://hugoci-test-bucket-248eadwvcive
