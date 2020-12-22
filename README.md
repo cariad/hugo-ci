@@ -1,22 +1,17 @@
 # cariad/hugo-ci
 
-A Docker image for building, testing and deploying Hugo sites.
-
-**Building Hugo sites in GitHub? Check out my _Hugo CI_ GitHub Action: [github.com/cariad/hugo-ci-action](https://github.com/cariad/hugo-ci-action)**
-
-## What’s onboard?
+`cariad/hugo-ci` is a Docker image for building, testing and deploying [Hugo](https://github.com/gohugoio/hugo) sites:
 
 `cariad/hugo-ci` will:
 
-1. Build your Hugo site from source.
-1. Validate your built site via [gjtorikian/html-proofer](https://github.com/gjtorikian/html-proofer).
+1. **Build** your Hugo site from source.
+1. **Validate** your site with [github.com/gjtorikian/html-proofer](https://github.com/gjtorikian/html-proofer).
+1. (Optional) **Upload** to your S3 bucket.
+1. (Optional) Fix your files’ **HTTP headers** with [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter).
 
-If you opt to deploy your site, `cariad/hugo-ci` will:
+**Building Hugo sites in GitHub? Check out my _Hugo CI_ GitHub Action: [github.com/cariad/hugo-ci-action](https://github.com/cariad/hugo-ci-action)**
 
-1. Upload to your S3 bucket.
-1. Set your files’ HTTP headers via [cariad/s3headersetter](https://github.com/cariad/s3headersetter).
-
-For an (almost) one-click deployment of an S3 bucket and everything else you need to host a static site in Amazon Web Services, check out [sitestack.cloud](https://sitestack.cloud).
+**Deploying static sites to Amazon Web Services? Check out my infrastructure: [sitestack.cloud](https://sitestack.cloud)**
 
 ## Configuration
 
@@ -34,9 +29,9 @@ For an (almost) one-click deployment of an S3 bucket and everything else you nee
 If you opt to deploy your site to an S3 bucket, you can set some custom HTTP headers for your uploaded files:
 
 - `Cache-Control` prescribes how long a file should be cached. Images, for example, typically don’t change as often as HTML files, and so can be granted much longer cache durations to aid performance.
-- `Content-Type` prescribes the content of a file. S3 has a jolly good try at identifying _some_ file types, but it’s far from complete. At time of writing, for example, S3 did not identity `.woff` files as `font/woff2`.
+- `Content-Type` prescribes the type of a file. S3 has a jolly good try at identifying _some_ file types, but it’s far from complete. At time of writing, for example, S3 did not identity `.woff` files as `font/woff2`.
 
-To set custom headers, refer to [cariad/s3headersetter](https://github.com/cariad/s3headersetter) for guidance to create an `s3headersetter` configuration file, then save it as `.s3headersetter.yml` in the root of your source project.
+To set custom headers, refer to [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter) for guidance to create an `s3headersetter` configuration file, then save it as `.s3headersetter.yml` in the root of your source project.
 
 If you don’t create `.s3headersetter.yml` then the following defaults will take effect:
 
@@ -48,7 +43,7 @@ If you don’t create `.s3headersetter.yml` then the following defaults will tak
 
 ## Running locally
 
-`cariad/hugo-ci` is great for building and testing your Hugo sites locally, but there’s a bit of boilerplate to wade through.
+`cariad/hugo-ci` is great for building and testing your Hugo sites locally.
 
 For an easy life, I recommend:
 
@@ -110,4 +105,6 @@ HTML-Proofer finished successfully.
 
 ## Acknowledgements
 
-- [github.com/gjtorikian/html-proofer)](https://github.com/gjtorikian/html-proofer)
+- ❤️ [github.com/gohugoio/hugo](https://github.com/gohugoio/hugo)
+- ❤️ [github.com/gjtorikian/html-proofer)](https://github.com/gjtorikian/html-proofer)
+- 👩🏼‍💻 [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter)
