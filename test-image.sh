@@ -4,15 +4,6 @@ li="\033[1;34m•\033[0m "  # List item
 nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
-echo -e "${li:?}Pulling \"cariad/hugo-ci:latest\"…"
-docker pull cariad/hugo-ci:latest
-
-echo -e "${li:?}Building \"cariad/hugo-ci:local\"…"
-docker build                         \
-  --cache-from cariad/hugo-ci:latest \
-  --tag        cariad/hugo-ci:local  \
-  .
-
 echo -e "${li:?}Arranging tests…"
 echo 'title = "My New Hugo Site"' > config.toml
 mkdir subdirectory
