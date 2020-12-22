@@ -24,8 +24,11 @@ docker-compose up
 echo -e "${li:?}Verifying results…"
 
 function assert() {
-  local expect=7
-  local actual=$(find "${1:?}" | wc -l)
+  expect=7
+  local expect
+  actual=$(find "${1:?}" | wc -l)
+  local actual
+
   if [ ! "${actual:?}" -eq "${expect:?}" ]; then
     echo -e "${nk:?}Expected ${expect:?} files in ${1:?} but found ${actual:?}."
     exit 1
