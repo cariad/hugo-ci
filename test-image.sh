@@ -7,6 +7,7 @@ ok="\033[0;32m✔️\033[0m "  # OK
 build=1
 
 LOCAL_IMAGE_NAME=cariad/hugo-ci:local
+export LOCAL_IMAGE_NAME
 
 while [[ ${1} = -* ]]; do
   arg=${1}
