@@ -5,13 +5,14 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   validate_dockerfile:
-    container: cariad/ci:1.1.0
+    container: cariad/ci:1.2.0
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - run: hadolint Dockerfile
 
-  validate_image:
+  test:
+    container: cariad/ci:1.2.0
     runs-on: ubuntu-20.04
     services:
       registry:
@@ -45,19 +46,3 @@ jobs:
       - name: Test
         run: |
           LOCAL_IMAGE_NAME=localhost:5000/cariad/hugo-ci:local ./test.sh
-
-  validate_scripts:
-    container: cariad/ci:1.1.0
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Validate
-        run: validate-shell-scripts.sh --expect 1
-
-  validate_yaml:
-    container: cariad/ci:1.1.0
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Validate
-        run: yamllint .
