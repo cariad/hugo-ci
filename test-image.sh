@@ -9,7 +9,8 @@ echo 'title = "My New Hugo Site"' > config.toml
 mkdir subdirectory
 echo 'title = "My New Hugo Site"' > subdirectory/config.toml
 
-branch="${GITHUB_REF##*/:?}"
+ref="${GITHUB_REF:?}"
+branch="${ref##*/}"
 echo -e "${li:?}Branch: ${branch:?}"
 
 echo -e "${li:?}Starting containers…"
