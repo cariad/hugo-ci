@@ -4,6 +4,27 @@ li="\033[1;34m•\033[0m "  # List item
 nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
+build=1
+
+LOCAL_IMAGE_NAME=cariad/hugo-ci:local
+
+while [[ ${1} = -* ]]; do
+  arg=${1}
+  shift
+
+  case ${arg} in
+    --image)
+      build=0
+      LOCAL_IMAGE_NAME="${1:?}"
+      shift
+      ;;
+
+    *)
+      echo "Unexpected argument: ${arg:?}"
+      exit 1
+      ;;
+  esac
+done
 
 function clean() {
   echo -e "${li:?}Cleaning…"
@@ -15,14 +36,14 @@ function clean() {
 
 clean
 
-if [[ "$*" != *--no-build* ]]; then
+if [[ "${build:?}" == 1 ]]; then
   echo -e "${li:?}Pulling \"cariad/hugo-ci:latest\"…"
   docker pull cariad/hugo-ci:latest
 
   echo -e "${li:?}Building \"cariad/hugo-ci:local\"…"
   docker build                         \
     --cache-from cariad/hugo-ci:latest \
-    --tag        cariad/hugo-ci:local  \
+    --tag        "${image:?}"          \
     .
 fi
 
