@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
 li="\033[1;34m•\033[0m "  # List item
-nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
 src=${SOURCE:=/src}
@@ -66,7 +65,7 @@ if [ "${DEPLOY:=0}" == "1" ]; then
 fi
 
 echo -e "${li:?}Uploading…"
-aws s3 sync --delete "${pub:?}" "s3://${s3_path:?}"
+aws s3 sync --delete "${pub:?}" "${s3_path:?}"
 
 echo -e "${li:?}Setting HTTP headers…"
 s3headersetter "${header_args[@]}"
