@@ -3,6 +3,7 @@ name: on-release
 on:  # yamllint disable-line rule:truthy
   release:
     types:
+      - prereleased
       - released
 
 jobs:
