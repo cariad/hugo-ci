@@ -9,8 +9,11 @@ echo 'title = "My New Hugo Site"' > config.toml
 mkdir subdirectory
 echo 'title = "My New Hugo Site"' > subdirectory/config.toml
 
+branch="${GITHUB_REF##*/:?}"
+echo -e "${li:?}Branch: ${branch:?}"
+
 echo -e "${li:?}Starting containers…"
-BRANCH="${GITHUB_REF##*/:?}" docker-compose up
+BRANCH="${branch:?}" docker-compose up
 
 echo -e "${li:?}Verifying results…"
 
