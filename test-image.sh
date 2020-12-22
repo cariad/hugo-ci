@@ -14,7 +14,7 @@ echo 'title = "My New Hugo Site"' > subdirectory/config.toml
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
 
-aws s3 rm "s3://${bucket:?}/*"
+aws s3 rm "s3://${bucket:?}" --recursive
 
 echo -e "${li:?}Starting containers…"
 BRANCH="${branch:?}" docker-compose up
@@ -43,10 +43,10 @@ bucket=hugoci-test-bucket-248eadwvcive
 
 aws s3 sync "s3://${bucket:?}/${GITHUB_SHA:?}" ./uploaded-subdirectory
 verify uploaded-subdirectory
-aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}/*"
+aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}" --recursive
 
 aws s3 sync "s3://${bucket:?}" ./uploaded-root
 verify uploaded-root
-aws s3 rm "s3://${bucket:?}/*"
+aws s3 rm "s3://${bucket:?}" --recursive
 
 echo -e "${ok:?}OK!"

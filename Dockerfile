@@ -52,8 +52,6 @@ RUN gpg --verify /tmp/aws.zip.sig /tmp/aws.zip && \
     rm -rf /tmp/*                              && \
     aws --version
 
-ENV AWS_DEFAULT_REGION eu-west-2
-
 COPY config/ /config
 COPY bin/    /usr/local/bin
 
