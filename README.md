@@ -17,12 +17,16 @@
 
 ### Environment variables
 
-| Environment variable | Default | Description                      |
-|----------------------|---------|----------------------------------|
-| `SOURCE`             | `/src`  | Path to website source files     |
-| `PUBLIC`             | `/pub`  | Path to website build directory  |
-| `S3_BUCKET`          |         | Name of S3 bucket to upload to   |
-| `S3_PREFIX`          |         | S3 prefix to upload to           |
+| Environment variable    | Default | Description                                    | Required                                                     |
+|-------------------------|---------|------------------------------------------------|--------------------------------------------------------------|
+| `SOURCE`                | `/src`  | Path to website source files                   | Optional                                                     |
+| `PUBLIC`                | `/pub`  | Path to website build directory                | Optional                                                     |
+| `S3_BUCKET`             |         | Name of S3 bucket to upload to                 | Only to upload                                               |
+| `S3_PREFIX`             |         | S3 prefix to upload to                         | Only to upload to an S3 prefix                               |
+| `AWS_ACCESS_KEY_ID`     |         | Access key ID for S3 upload authentication     | Only to upload and not running with an AWS instance profile  |
+| `AWS_SECRET_ACCESS_KEY` |         | Secret access key for S3 upload authentication | Only to upload and not running with an AWS instance profile  |
+| `AWS_SESSION_TOKEN`     |         | Session token S3 upload authentication         | Only to upload and authenticating with temporary credentials |
+| `DEPLOY`                | `1`     | Set to `0` to perform a dry-run                | Optional                                                     |
 
 ### HTTP headers
 
@@ -53,7 +57,7 @@ For an easy life, I recommend:
 This sample script will take the current working directory as the source, and the `public` subdirectory as the build destination:
 
 ```bash
-#!/bin/bash
+#!/bin/bash -e
 
 src_dir="$(pwd)"
 pub_dir="$(pwd)/public"
