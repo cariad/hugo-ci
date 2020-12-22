@@ -1,10 +1,11 @@
 name: on-release
 
 on:  # yamllint disable-line rule:truthy
-  release:
-    types:
-      - prereleased
-      - released
+  push:
+    branches-ignore:
+      - "**"
+    tags:
+      - "**"
 
 jobs:
   publish:
