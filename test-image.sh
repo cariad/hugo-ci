@@ -36,13 +36,14 @@ function verify() {
 verify public
 verify subdirectory/public
 
-aws s3 sync s3://hugoci-test-bucket-248eadwvcive ./uploaded-root
-verify uploaded-root
+bucket=hugoci-test-bucket-248eadwvcive
 
-aws s3 sync "s3://hugoci-test-bucket-248eadwvcive/${GITHUB_SHA:?}" ./uploaded-subdirectory
+aws s3 sync "s3://${bucket:?}/${GITHUB_SHA:?}" ./uploaded-subdirectory
 verify uploaded-subdirectory
+aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}/*"
 
-mkdir empty
-aws s3 sync --delete empty s3://hugoci-test-bucket-248eadwvcive
+aws s3 sync "s3://${bucket:?}" ./uploaded-root
+verify uploaded-root
+aws s3 rm "s3://${bucket:?}/*"
 
 echo -e "${ok:?}OK!"
