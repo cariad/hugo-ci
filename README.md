@@ -1,29 +1,37 @@
 # cariad/hugo-ci
 
-A Docker image for building, testing and deploying Hugo sites.
-
-## What’s onboard?
+`cariad/hugo-ci` is a Docker image for building, testing and deploying [Hugo](https://github.com/gohugoio/hugo) sites:
 
 `cariad/hugo-ci` will:
 
-1. Build your Hugo site from source.
-1. Validate your built site via [gjtorikian/html-proofer](https://github.com/gjtorikian/html-proofer).
+1. **Build** your Hugo site from source.
+1. **Validate** your site with [github.com/gjtorikian/html-proofer](https://github.com/gjtorikian/html-proofer).
+1. (Optional) **Upload** to your S3 bucket.
+1. (Optional) Fix your files’ **HTTP headers** with [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter).
 
-If you opt to deploy your site, `cariad/hugo-ci` will:
+**Building Hugo sites in GitHub? Check out my _Hugo CI_ GitHub Action: [github.com/cariad/hugo-ci-action](https://github.com/cariad/hugo-ci-action)**
 
-1. Upload to your S3 bucket.
-1. Set your files’ HTTP headers via [cariad/s3headersetter](https://github.com/cariad/s3headersetter).
+**Deploying static sites to Amazon Web Services? Check out my infrastructure: [sitestack.cloud](https://sitestack.cloud)**
 
-For an (almost) one-click deployment of an S3 bucket and everything else you need to host a static site in Amazon Web Services, check out [sitestack.cloud](https://sitestack.cloud).
+## Configuration
 
-## Setting HTTP headers for uploaded files
+### Environment variables
 
-If you opt to deploy your site to an S3 bucket, then you can set some custom HTTP headers on your files:
+| Environment variable | Default | Description                      |
+|----------------------|---------|----------------------------------|
+| `SOURCE`             | `/src`  | Path to website source files     |
+| `PUBLIC`             | `/pub`  | Path to website build directory  |
+| `S3_BUCKET`          |         | Name of S3 bucket to upload to   |
+| `S3_PREFIX`          |         | S3 prefix to upload to           |
+
+### HTTP headers
+
+If you opt to deploy your site to an S3 bucket, you can set some custom HTTP headers for your uploaded files:
 
 - `Cache-Control` prescribes how long a file should be cached. Images, for example, typically don’t change as often as HTML files, and so can be granted much longer cache durations to aid performance.
-- `Content-Type` prescribes the content of a file. S3 has a jolly good try at identifying _some_ file types, but it’s far from complete. At time of writing, for example, S3 did not identity `.woff` files as `font/woff2`.
+- `Content-Type` prescribes the type of a file. S3 has a jolly good try at identifying _some_ file types, but it’s far from complete. At time of writing, for example, S3 did not identity `.woff` files as `font/woff2`.
 
-To set custom headers, refer to [cariad/s3headersetter](https://github.com/cariad/s3headersetter) for guidance to create an `s3headersetter` configuration file, then save it as `.s3headersetter.yml` in the root of your source project.
+To set custom headers, refer to [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter) for guidance to create an `s3headersetter` configuration file, then save it as `.s3headersetter.yml` in the root of your source project.
 
 If you don’t create `.s3headersetter.yml` then the following defaults will take effect:
 
@@ -35,13 +43,12 @@ If you don’t create `.s3headersetter.yml` then the following defaults will tak
 
 ## Running locally
 
-The key notes for running `cariad/hugo-ci` are:
+`cariad/hugo-ci` is great for building and testing your Hugo sites locally.
 
-- Your source directory must be mapped to `/src`.
-- Your build directory must exist and be mapped to `/pub`.
-- To perform a deployment:
-    - The `S3_BUCKET` environment variable must be set to thw name of your bucket.
-    - To deploy to a key prefix, set `S3_PREFIX`. Do not include a trailing slash.
+For an easy life, I recommend:
+
+- Map your local source directory to `/src` in the container.
+- Map your local build directory to `/pub` in the container. This directory must exist.
 
 This sample script will take the current working directory as the source, and the `public` subdirectory as the build destination:
 
@@ -61,18 +68,43 @@ docker run                                            \
   cariad/hugo-ci
 ```
 
-To include a deployment, set the `S3_BUCKET` and (if required) `S3_PREFIX` environment variables:
+To run this script against your local development directory:
 
-```bash
-docker run                                            \
-  --env   S3_BUCKET=mywebsitesbucket                  \
-  --env   S3_PREFIX=mymicrositeprefix                 \
-  --mount "type=bind,source=${src_dir:?},target=/src" \
-  --mount "type=bind,source=${pub_dir:?},target=/pub" \
-  --rm                                                \
-  cariad/hugo-ci
+1. Copy-paste the script into `test.sh`.
+1. Give the script permission to execute with `chmod +x test.sh`.
+1. Run it with `./test.sh`.
+
+You should see a response like this:
+
+```text
+Start building sites …
+
+                   | EN
+-------------------+------
+  Pages            |  22
+  Paginator pages  |   0
+  Non-page files   |   6
+  Static files     |  48
+  Processed images | 139
+  Aliases          |   1
+  Sitemaps         |   1
+  Cleaned          |   0
+
+Total in 3343 ms
+Proofing...
+Running ["ScriptCheck", "OpenGraphCheck", "ImageCheck", "HtmlCheck", "FaviconCheck", "LinkCheck"] on ["/pub"] on *.html...
+
+
+Ran on 15 files!
+
+
+HTML-Proofer finished successfully.
 ```
 
-## Running in GitHub actions
+…and the `public` directory should contain your built website.
 
-See [github.com/cariad/hugo-ci-action](https://github.com/cariad/hugo-ci-action).
+## Acknowledgements
+
+- ❤️ [github.com/gohugoio/hugo](https://github.com/gohugoio/hugo)
+- ❤️ [github.com/gjtorikian/html-proofer)](https://github.com/gjtorikian/html-proofer)
+- 👩🏼‍💻 [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter)

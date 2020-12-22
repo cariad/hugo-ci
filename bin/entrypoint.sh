@@ -1,9 +1,12 @@
 #!/bin/bash -e
 
-hugo --source /src --destination /pub --minify
+src=${SOURCE:=/src}
+pub=${PUBLIC:=/pub}
+
+hugo --source "${src:?}" --destination "${pub:?}" --minify
 
 echo "Proofing..."
-htmlproofer /pub            \
+htmlproofer "${pub:?}"      \
   --allow-hash-href         \
   --check-favicon           \
   --check-html              \
@@ -25,7 +28,7 @@ s3_path="s3://${S3_BUCKET:?}${S3_PREFIX:=}"
 
 header_args=(-bucket "${S3_BUCKET:?}")
 
-usr_header_config=/src/.s3headersetter.yml
+usr_header_config="${src:?}/.s3headersetter.yml"
 sys_header_config=/config/.s3headersetter.yml
 
 if [ -f "${usr_header_config}" ]; then
@@ -44,5 +47,5 @@ if [ "${DEPLOY:=0}" == "1" ]; then
   exit 0
 fi
 
-aws s3 sync --delete public "s3://${s3_path:?}"
+aws s3 sync --delete "${pub:?}" "s3://${s3_path:?}"
 s3headersetter "${header_args[@]}"
