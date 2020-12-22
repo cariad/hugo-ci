@@ -4,21 +4,26 @@ on:  # yamllint disable-line rule:truthy
   - push
 
 jobs:
-  validate_dockerfile:
+  test_boilerplate:
     container: cariad/ci:1.2.0
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - run: hadolint Dockerfile
+      - run: ./test-boilerplate.sh
 
-  test:
-    container: cariad/ci:1.2.0
+  test_image:
     runs-on: ubuntu-20.04
+
     services:
       registry:
         image: registry:2
         ports:
           - 5000:5000
+
+    env:
+      LOCAL_IMAGE_NAME: localhost:5000/cariad/hugo-ci:local
 
     steps:
       - name: Checkout
@@ -41,8 +46,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
           pull: true
-          tags: localhost:5000/cariad/hugo-ci:local
+          tags: ${LOCAL_IMAGE_NAME:?}
 
       - name: Test
-        run: |
-          LOCAL_IMAGE_NAME=localhost:5000/cariad/hugo-ci:local ./test.sh
+        run: ./test-image.sh
