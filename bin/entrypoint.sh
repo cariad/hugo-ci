@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-hugo --source /src --destination /pub
+hugo --source /src --destination /pub --minify
 
 echo "Proofing..."
 htmlproofer /pub            \
