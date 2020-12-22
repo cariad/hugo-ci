@@ -47,6 +47,8 @@ aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}" --recursive
 
 aws s3 sync "s3://${bucket:?}" ./uploaded-root
 verify uploaded-root
-aws s3 rm "s3://${bucket:?}" --recursive
+
+# I intentionally don't erase this "root" deployment so I can check the HTTP
+# headers.
 
 echo -e "${ok:?}OK!"

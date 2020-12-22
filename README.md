@@ -19,14 +19,15 @@
 
 | Environment variable    | Default | Description                                    | Required                                                     |
 |-------------------------|---------|------------------------------------------------|--------------------------------------------------------------|
-| `SOURCE`                | `/src`  | Path to website source files                   | Optional                                                     |
-| `PUBLIC`                | `/pub`  | Path to website build directory                | Optional                                                     |
-| `S3_BUCKET`             |         | Name of S3 bucket to upload to                 | Only to upload                                               |
-| `S3_PREFIX`             |         | S3 prefix to upload to                         | Only to upload to an S3 prefix                               |
 | `AWS_ACCESS_KEY_ID`     |         | Access key ID for S3 upload authentication     | Only to upload and not running with an AWS instance profile  |
+| `AWS_DEFAULT_REGION`    |         | S3 bucket region                               | Only to upload                                               |
 | `AWS_SECRET_ACCESS_KEY` |         | Secret access key for S3 upload authentication | Only to upload and not running with an AWS instance profile  |
 | `AWS_SESSION_TOKEN`     |         | Session token S3 upload authentication         | Only to upload and authenticating with temporary credentials |
 | `DEPLOY`                | `1`     | Set to `0` to perform a dry-run                | Optional                                                     |
+| `PUBLIC`                | `/pub`  | Path to website build directory                | Optional                                                     |
+| `S3_BUCKET`             |         | Name of S3 bucket to upload to                 | Only to upload                                               |
+| `S3_PREFIX`             |         | S3 prefix to upload to                         | Only to upload to an S3 prefix                               |
+| `SOURCE`                | `/src`  | Path to website source files                   | Optional                                                     |
 
 ### HTTP headers
 
