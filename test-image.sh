@@ -4,6 +4,8 @@ li="\033[1;34m•\033[0m "  # List item
 nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
+bucket=hugoci-test-bucket-248eadwvcive
+
 echo -e "${li:?}Arranging tests…"
 echo 'title = "My New Hugo Site"' > config.toml
 mkdir subdirectory
@@ -11,7 +13,8 @@ echo 'title = "My New Hugo Site"' > subdirectory/config.toml
 
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
-echo -e "${li:?}Branch: ${branch:?}"
+
+aws s3 rm "s3://${bucket:?}/*"
 
 echo -e "${li:?}Starting containers…"
 BRANCH="${branch:?}" docker-compose up
