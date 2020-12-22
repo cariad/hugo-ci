@@ -15,14 +15,16 @@ function clean() {
 
 clean
 
-echo -e "${li:?}Pulling \"cariad/hugo-ci:latest\"…"
-docker pull cariad/hugo-ci:latest
+if [[ "$*" != *--no-build* ]]; then
+  echo -e "${li:?}Pulling \"cariad/hugo-ci:latest\"…"
+  docker pull cariad/hugo-ci:latest
 
-echo -e "${li:?}Building \"cariad/hugo-ci:local\"…"
-docker build                         \
-  --cache-from cariad/hugo-ci:latest \
-  --tag        cariad/hugo-ci:local  \
-  .
+  echo -e "${li:?}Building \"cariad/hugo-ci:local\"…"
+  docker build                         \
+    --cache-from cariad/hugo-ci:latest \
+    --tag        cariad/hugo-ci:local  \
+    .
+fi
 
 echo -e "${li:?}Arranging tests…"
 mkdir public

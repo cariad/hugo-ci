@@ -49,4 +49,4 @@ jobs:
           tags: ${{env.LOCAL_IMAGE_NAME}}
 
       - name: Test
-        run: ./test-image.sh
+        run: ./test-image.sh --no-build
