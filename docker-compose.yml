@@ -3,19 +3,19 @@ version: "3.9"
 services:
 
   root:
-    image: cariad/hugo-ci:local
+    image: cariad/hugo-ci:${BRANCH}
     volumes:
       - .:/src
       - ./public:/pub
 
   subdirectory:
-    image: cariad/hugo-ci:local
+    image: cariad/hugo-ci:${BRANCH}
     volumes:
       - ./subdirectory:/src
       - ./subdirectory/public:/pub
 
   upload:
-    image: cariad/hugo-ci:local
+    image: cariad/hugo-ci:${BRANCH}
     environment:
       - S3_BUCKET=hugoci-test-bucket-248eadwvcive
     volumes:
@@ -23,7 +23,7 @@ services:
       - ./public:/pub
 
   upload_with_prefix:
-    image: cariad/hugo-ci:local
+    image: cariad/hugo-ci:${BRANCH}
     environment:
       - S3_BUCKET=hugoci-test-bucket-248eadwvcive
       - S3_PREFIX=${GITHUB_SHA}
