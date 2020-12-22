@@ -22,10 +22,7 @@ function verify() {
   local actual
   local expect
 
-  echo -e "${li:?}Checking \"${1:?}\"..."
   actual=$(find "${1:?}" | wc -l)
-  echo -e "${li:?}${actual}"
-
   expect=7
 
   if [ ! "${actual:?}" -eq "${expect:?}" ]; then
