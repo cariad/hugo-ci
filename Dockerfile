@@ -33,6 +33,25 @@ RUN apt-get update                                            && \
     mv /tmp/s3headersetter /usr/local/bin/                    && \
     rm -rf /tmp/*
 
+RUN apt-get update                                && \
+    apt-get --no-install-recommends --yes install    \
+      gpg=2.2.*                                      \
+      gpg-agent=2.2.*                             && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY keys/aws-cli.pub /tmp/aws-cli.pub
+RUN gpg --import /tmp/aws-cli.pub && \
+    rm -rf /tmp/*
+
+ENV AWS_VERSION 2.1.13
+ADD https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_VERSION}.zip     /tmp/aws.zip
+ADD https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_VERSION}.zip.sig /tmp/aws.zip.sig
+RUN gpg --verify /tmp/aws.zip.sig /tmp/aws.zip && \
+    unzip /tmp/aws.zip -d /tmp                 && \
+    /tmp/aws/install                           && \
+    rm -rf /tmp/*                              && \
+    aws --version
+
 COPY config/ /config
 COPY bin/    /usr/local/bin
 
