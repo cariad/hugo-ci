@@ -71,6 +71,8 @@ if [ ! "${actual:?}" -eq "${expect:?}" ]; then
   echo -e "${nk:?}Expected ${expect:?} files in ./subdirectory/public but found ${actual:?}."
 fi
 
+set +e
 clean
+set -e
 
 echo -e "${ok:?}OK!"
