@@ -1,10 +1,11 @@
 name: on-commit
 
 on:  # yamllint disable-line rule:truthy
-  branches:
-    - "**"
-  tags-ignore:
-    - "**"
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
 
 jobs:
 
