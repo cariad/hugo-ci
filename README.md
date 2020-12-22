@@ -24,7 +24,7 @@
 | `S3_BUCKET`          |         | Name of S3 bucket to upload to   |
 | `S3_PREFIX`          |         | S3 prefix to upload to           |
 
-### HTTP headetrs
+### HTTP headers
 
 If you opt to deploy your site to an S3 bucket, you can set some custom HTTP headers for your uploaded files:
 
