@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+
+  root:
+    image: ${LOCAL_IMAGE_NAME}
+    volumes:
+      - .:/src
+      - ./public:/pub
+
+  subdirectory:
+    image: ${LOCAL_IMAGE_NAME}
+    volumes:
+      - ./subdirectory:/src
+      - ./subdirectory/public:/pub
