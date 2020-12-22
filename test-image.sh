@@ -10,7 +10,7 @@ mkdir subdirectory
 echo 'title = "My New Hugo Site"' > subdirectory/config.toml
 
 echo -e "${li:?}Starting containers…"
-BRANCH=${GITHUB_REF##*/} docker-compose up
+BRANCH="${GITHUB_REF##*/:?}" docker-compose up
 
 echo -e "${li:?}Verifying results…"
 
@@ -24,6 +24,8 @@ function assert() {
     echo -e "${nk:?}Expected ${expect:?} files in ${1:?} but found ${actual:?}."
     exit 1
   fi
+
+  echo -e "${ok:?}${1:?} OK"
 }
 
 assert public
