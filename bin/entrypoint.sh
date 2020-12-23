@@ -12,7 +12,7 @@ while [[ $1 = -* ]]; do
 
   case ${arg} in
     --workspace)
-      [ -n "${1}" ] && workspace=${1%%/}
+      [ -n "${1}" ] && workspace=${1:?}
       shift;;
 
     --s3-bucket)
