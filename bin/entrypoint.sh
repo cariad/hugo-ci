@@ -3,10 +3,30 @@
 li="\033[1;34m•\033[0m "  # List item
 ok="\033[0;32m✔️\033[0m "  # OK
 
-src=${SOURCE:=/src}
-echo -e "${li:?}Source path: ${src:?}"
+src=/src
+pub=/pub
 
-pub=${PUBLIC:=/pub}
+while [[ $1 = -* ]]; do
+  arg=$1; shift
+
+  case ${arg} in
+    --public)
+      pub=${1:?}; shift;;
+
+    --s3_bucket)
+      s3_bucket=${1:?}; shift;;
+
+    --source)
+      src=${1:?}; shift;;
+
+    *)
+      echo "Unexpected argument: ${arg}"
+      exit 1
+      ;;
+  esac
+done
+
+echo -e "${li:?}Source path: ${src:?}"
 echo -e "${li:?}Public path: ${pub:?}"
 
 hugo --source "${src:?}" --destination "${pub:?}" --minify
@@ -28,21 +48,21 @@ htmlproofer "${pub:?}"      \
 
 echo -e "${ok:?} OK"
 
-if [ "${S3_BUCKET:=}" == "" ]; then
+if [ -n ${s3_bucket} ]; then
   exit 0
 fi
 
-echo -e "${li:?}S3 bucket: ${S3_BUCKET:?}"
-s3_path="s3://${S3_BUCKET:?}"
+echo -e "${li:?}S3 bucket: ${s3_bucket:?}"
+s3_path="s3://${s3_bucket:?}"
 
 if [ "${S3_PREFIX:=}" != "" ]; then
   echo -e "${li:?}S3 prefix: ${S3_PREFIX:=}"
-  s3_path="s3://${S3_BUCKET:?}/${S3_PREFIX:?}"
+  s3_path="s3://${s3_bucket:?}/${S3_PREFIX:?}"
 fi
 
 echo -e "${li:?}S3 path: ${s3_path:?}"
 
-header_args=(-bucket "${S3_BUCKET:?}")
+header_args=(-bucket "${s3_bucket:?}")
 
 usr_header_config="${src:?}/.s3headersetter.yml"
 sys_header_config=/config/.s3headersetter.yml
