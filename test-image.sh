@@ -5,9 +5,15 @@ nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
 echo -e "${li:?}Arranging tests…"
-echo 'title = "My New Hugo Site"' > config.toml
-mkdir subdirectory
-echo 'title = "My New Hugo Site"' > subdirectory/config.toml
+
+function make_source() {
+  mkdir -p "${1:?}"
+  echo 'title = "My New Hugo Site"' > "${1:?}/config.toml"
+}
+
+make_source .        # "root" scenario; expect "public"
+make_source alt-src  # "alt-src" scenario; expect "alt-src/public"
+
 
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
@@ -34,16 +40,19 @@ function verify() {
   echo -e "${ok:?}${1:?} OK"
 }
 
-verify public
-verify custom-public
-verify subdirectory/public
+verify public          # "root" scenario
+verify alt-src/public  # "alt-src" scenario
+verify alt-pub         # "alt-pub" scenario
 
-aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./uploaded-with-prefix
-verify uploaded-with-prefix
-aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
+# verify custom-public
+# verify subdirectory/public
 
-aws s3 sync "s3://${S3_BUCKET:?}" ./uploaded-root
-verify uploaded-root
+# aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./public-with-prefix
+# verify public-with-prefix
+# aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
+
+# aws s3 sync "s3://${S3_BUCKET:?}" ./uploaded-root
+# verify uploaded-root
 
 # Don't erase this "root" deployment; go check the HTTP headers.
 

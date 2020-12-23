@@ -5,19 +5,14 @@
 li="\033[1;34m•\033[0m "  # List item
 ok="\033[0;32m✔️\033[0m "  # OK
 
-# Default values:
-
-src=/src
-pub=/pub
-
 # Read command line arguments:
 
 while [[ $1 = -* ]]; do
   arg=$1; shift
 
   case ${arg} in
-    --public)
-      pub=${1:?}; shift;;
+    --workspace)
+      workspace=${1:?}; shift;;
 
     --s3-bucket)
       s3_bucket=${1:?}; shift;;
@@ -30,9 +25,6 @@ while [[ $1 = -* ]]; do
       export AWS_DEFAULT_REGION
       shift;;
 
-    --source)
-      src=${1:?}; shift;;
-
     *)
       echo "Unexpected argument: ${arg}"
       exit 1
@@ -40,15 +32,20 @@ while [[ $1 = -* ]]; do
   esac
 done
 
-# Log the values we'll run with:
+# Resolve defaults:
 
-echo -e "${li:?}Source path: ${src:?}"
-echo -e "${li:?}Public path: ${pub:?}"
+if [ -z "${workspace}" ]; then
+  src=/workspace
+  echo -e "${li:?}Workspace: ${workspace:?} (default)"
+else
+  echo -e "${li:?}Workspace: ${workspace:?}"
+fi
+
 echo -e "${li:?}Region:      ${AWS_DEFAULT_REGION:?}"
 
 # Build:
 
-hugo --source "${src:?}" --destination "${pub:?}" --minify
+hugo --source "${workspace:?}" --minify
 
 # Lint:
 

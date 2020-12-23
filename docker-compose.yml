@@ -5,18 +5,22 @@ services:
   root:
     image: cariad/hugo-ci:${BRANCH}
     volumes:
-      - .:/src
-      - ./public:/pub
+      - .:/workspace
 
-  root_custom_path:
+  alt-src:
     command: >-
-      --public /custom-pub
-      --source /custom-src
-
+      --source /alt-src
     image: cariad/hugo-ci:${BRANCH}
     volumes:
-      - ./:/custom-src
-      - ./custom-public:/custom-pub
+      - ./alt-src:/alt-src
+
+  alt-pub:
+    command: >-
+      --public /alt-pub
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./.:/workspace
+      - ./alt-pub:/alt-pub
 
   subdirectory:
     image: cariad/hugo-ci:${BRANCH}
