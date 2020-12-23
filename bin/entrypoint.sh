@@ -1,10 +1,16 @@
 #!/bin/bash -e
 
+# Helpful constants:
+
 li="\033[1;34m•\033[0m "  # List item
 ok="\033[0;32m✔️\033[0m "  # OK
 
+# Default values:
+
 src=/src
 pub=/pub
+
+# Read command line arguments:
 
 while [[ $1 = -* ]]; do
   arg=$1; shift
@@ -13,8 +19,11 @@ while [[ $1 = -* ]]; do
     --public)
       pub=${1:?}; shift;;
 
-    --s3_bucket)
+    --s3-bucket)
       s3_bucket=${1:?}; shift;;
+
+    --s3-prefix)
+      s3_prefix=${1:?}; shift;;
 
     --source)
       src=${1:?}; shift;;
@@ -26,10 +35,16 @@ while [[ $1 = -* ]]; do
   esac
 done
 
+# Log the values we'll run with:
+
 echo -e "${li:?}Source path: ${src:?}"
 echo -e "${li:?}Public path: ${pub:?}"
 
+# Build:
+
 hugo --source "${src:?}" --destination "${pub:?}" --minify
+
+# Lint:
 
 echo -e "${li:?}Linting…"
 htmlproofer "${pub:?}"      \
@@ -48,19 +63,26 @@ htmlproofer "${pub:?}"      \
 
 echo -e "${ok:?} OK"
 
+# If we have no hosting details then stop now:
+
 if [ -z "${s3_bucket}" ]; then
   exit 0
 fi
 
+# Build S3 path:
+
 echo -e "${li:?}S3 bucket: ${s3_bucket:?}"
+
 s3_path="s3://${s3_bucket:?}"
 
-if [ "${S3_PREFIX:=}" != "" ]; then
-  echo -e "${li:?}S3 prefix: ${S3_PREFIX:=}"
-  s3_path="s3://${s3_bucket:?}/${S3_PREFIX:?}"
+if [ -n "${s3_prefix}" ]; then
+  echo -e "${li:?}S3 prefix: ${s3_prefix:?}"
+  s3_path="s3://${s3_bucket:?}/${s3_prefix:?}"
 fi
 
 echo -e "${li:?}S3 path: ${s3_path:?}"
+
+# Build s3headersetter arguments:
 
 header_args=(-bucket "${s3_bucket:?}")
 
@@ -73,21 +95,29 @@ else
   header_args+=(-config "${sys_header_config}")
 fi
 
-if [ "${S3_PREFIX:=}" != "" ]; then
-  header_args+=(-key-prefix "${S3_PREFIX:?}")
+if [ -n "${s3_prefix}" ]; then
+  header_args+=(-key-prefix "${s3_prefix:?}")
 fi
 
 echo -e "${li:?}s3headersetter arguments: ${header_args[*]}"
+
+# If this is a dry-run then stop now:
 
 if [ "${DEPLOY:=0}" == "1" ]; then
   echo "This is a dry-run, so gracefully stopping now."
   exit 0
 fi
 
+# Upload:
+
 echo -e "${li:?}Uploading…"
 aws s3 sync --delete "${pub:?}" "${s3_path:?}"
 
+# Set HTTP headers:
+
 echo -e "${li:?}Setting HTTP headers…"
 s3headersetter "${header_args[@]}"
+
+# Done!
 
 echo -e "${ok:?}OK"
