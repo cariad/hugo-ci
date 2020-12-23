@@ -15,19 +15,19 @@
 
 ## Configuration
 
+### Arguments
+
+| Argument      | Description                               | Default value              | Example                                       |
+|---------------|-------------------------------------------|----------------------------|-----------------------------------------------|
+| `--public`    | Path _within the container_ to build to   | `/pub`                     | `--public /github/workspace/public`           |
+| `--s3-bucket` | S3 bucket to upload to                    | Empty; will not upload     | `--s3-bucket hugoci-test-bucket-248eadwvcive` |
+| `--s3-prefix` | S3 prefix to upload to                    | Empty; will upload to root | `--s3-prefix microsite`                       |
+| `--s3-region` | Region where the S3 bucket resides        | `us-east-1`                | `--s3-region eu-west-2`                       |
+| `--source`    | Path _within the container_ to build from | `/src`                     | `--source /github/workspace`                  |
+
 ### Environment variables
 
-| Environment variable    | Default | Description                                    | Required                                                     |
-|-------------------------|---------|------------------------------------------------|--------------------------------------------------------------|
-| `AWS_ACCESS_KEY_ID`     |         | Access key ID for S3 upload authentication     | Only to upload and not running with an AWS instance profile  |
-| `AWS_DEFAULT_REGION`    |         | S3 bucket region                               | Only to upload                                               |
-| `AWS_SECRET_ACCESS_KEY` |         | Secret access key for S3 upload authentication | Only to upload and not running with an AWS instance profile  |
-| `AWS_SESSION_TOKEN`     |         | Session token S3 upload authentication         | Only to upload and authenticating with temporary credentials |
-| `DEPLOY`                | `1`     | Set to `0` to perform a dry-run                | Optional                                                     |
-| `PUBLIC`                | `/pub`  | Path to website build directory                | Optional                                                     |
-| `S3_BUCKET`             |         | Name of S3 bucket to upload to                 | Only to upload                                               |
-| `S3_PREFIX`             |         | S3 prefix to upload to                         | Only to upload to an S3 prefix                               |
-| `SOURCE`                | `/src`  | Path to website source files                   | Optional                                                     |
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and (if required) `AWS_SESSION_TOKEN` environment variables are required only when deploying to an S3 bucket.
 
 ### HTTP headers
 
@@ -46,6 +46,10 @@ If you don’t create `.s3headersetter.yml` then the following defaults will tak
 | `.css`       | `max-age=604800, public` | _Defer to S3_  |
 | `.woff2`     | _Defer to S3_            | `font/woff2`   |
 
+## Running in GitHub
+
+Check out my _Hugo CI_ GitHub Action: [github.com/cariad/hugo-ci-action](https://github.com/cariad/hugo-ci-action).
+
 ## Running locally
 
 `cariad/hugo-ci` is great for building and testing your Hugo sites locally.
@@ -53,7 +57,7 @@ If you don’t create `.s3headersetter.yml` then the following defaults will tak
 For an easy life, I recommend:
 
 - Map your local source directory to `/src` in the container.
-- Map your local build directory to `/pub` in the container. This directory must exist.
+- Map your local build directory to `/pub` in the container.
 
 This sample script will take the current working directory as the source, and the `public` subdirectory as the build destination:
 
@@ -62,9 +66,6 @@ This sample script will take the current working directory as the source, and th
 
 src_dir="$(pwd)"
 pub_dir="$(pwd)/public"
-
-rm -rf "${pub_dir:?}"
-mkdir  "${pub_dir:?}"
 
 docker run                                            \
   --mount "type=bind,source=${src_dir:?},target=/src" \
@@ -79,34 +80,7 @@ To run this script against your local development directory:
 1. Give the script permission to execute with `chmod +x test.sh`.
 1. Run it with `./test.sh`.
 
-You should see a response like this:
-
-```text
-Start building sites …
-
-                   | EN
--------------------+------
-  Pages            |  22
-  Paginator pages  |   0
-  Non-page files   |   6
-  Static files     |  48
-  Processed images | 139
-  Aliases          |   1
-  Sitemaps         |   1
-  Cleaned          |   0
-
-Total in 3343 ms
-Proofing...
-Running ["ScriptCheck", "OpenGraphCheck", "ImageCheck", "HtmlCheck", "FaviconCheck", "LinkCheck"] on ["/pub"] on *.html...
-
-
-Ran on 15 files!
-
-
-HTML-Proofer finished successfully.
-```
-
-…and the `public` directory should contain your built website.
+The `public` directory should then contain your built website.
 
 ## Acknowledgements
 
