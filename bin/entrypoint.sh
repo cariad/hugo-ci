@@ -35,33 +35,35 @@ done
 # Resolve defaults:
 
 if [ -z "${workspace}" ]; then
-  src=/workspace
+  workspace=/workspace
   echo -e "${li:?}Workspace: ${workspace:?} (default)"
 else
   echo -e "${li:?}Workspace: ${workspace:?}"
 fi
 
-echo -e "${li:?}Region:      ${AWS_DEFAULT_REGION:?}"
+public="${workspace:?}/public"
+echo -e "${li:?}Public:    ${public:?}"
+echo -e "${li:?}Region:    ${AWS_DEFAULT_REGION:?}"
 
 # Build:
 
-hugo --source "${workspace:?}" --minify
+hugo --source "${workspace:?}" --destination "${public:?}" --minify
 
 # Lint:
 
 echo -e "${li:?}Linting…"
-htmlproofer "${pub:?}"      \
-  --allow-hash-href         \
-  --check-favicon           \
-  --check-html              \
-  --check-img-http          \
-  --check-opengraph         \
-  --disable-external        \
-  --report-invalid-tags     \
-  --report-missing-names    \
-  --report-script-embeds    \
-  --report-missing-doctype  \
-  --report-eof-tags         \
+htmlproofer "${public:?}"  \
+  --allow-hash-href        \
+  --check-favicon          \
+  --check-html             \
+  --check-img-http         \
+  --check-opengraph        \
+  --disable-external       \
+  --report-invalid-tags    \
+  --report-missing-names   \
+  --report-script-embeds   \
+  --report-missing-doctype \
+  --report-eof-tags        \
   --report-mismatched-tags
 
 echo -e "${ok:?} OK"
@@ -107,7 +109,7 @@ echo -e "${li:?}s3headersetter arguments: ${header_args[*]}"
 # Upload:
 
 echo -e "${li:?}Uploading…"
-aws s3 sync --delete "${pub:?}" "${s3_path:?}"
+aws s3 sync --delete "${public:?}" "${s3_path:?}"
 
 # Set HTTP headers:
 
