@@ -13,33 +13,32 @@ services:
     volumes:
       - .:/workspace
 
+  # Maps the "sub-workspace" directory to the default workspace.
+  # Builds to "sub-workspace/public".
+  sub-workspace:
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./sub-workspace:/workspace
+
   # Maps the "alt-workspace" directory to the "/alt-workspace" workspace.
   # Builds to "alt-workspace/public".
   alt-workspace:
-    command: >-
-      --workspace /alt-workspace
+    command: --workspace /alt-workspace
     image: cariad/hugo-ci:${BRANCH}
     volumes:
       - ./alt-workspace:/alt-workspace
 
-  # subdirectory:
-  #   image: cariad/hugo-ci:${BRANCH}
-  #   volumes:
-  #     - ./subdirectory:/src
-  #     - ./subdirectory/public:/pub
-
-  # upload:
-  #   command: >-
-  #     --s3-bucket ${S3_BUCKET}
-  #     --s3-region ${AWS_DEFAULT_REGION}
-
-  #   image: cariad/hugo-ci:${BRANCH}
-  #   environment:
-  #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  #   volumes:
-  #     - .:/src
-  #     - ./public-uploaded:/pub
+  # Maps the "upload-workspace" directory to the default workspace.
+  # Builds to "upload-workspace/public".
+  # This test should be verified by downloading the root content of the bucket.
+  upload:
+    command: --s3-bucket ${S3_BUCKET}
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./upload-workspace:/workspace
 
   # upload_with_prefix:
   #   command: >-

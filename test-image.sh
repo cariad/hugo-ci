@@ -12,7 +12,9 @@ function make_source() {
 }
 
 make_source .
+make_source sub-workspace
 make_source alt-workspace
+make_source upload-workspace
 
 
 ref="${GITHUB_REF:?}"
@@ -41,17 +43,16 @@ function verify() {
 }
 
 verify public                # "root" scenario
+verify sub-workspace/public  # "sub-workspace" scenario
 verify alt-workspace/public  # "alt-workspace" scenario
 
-# verify custom-public
-# verify subdirectory/public
 
 # aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./public-with-prefix
 # verify public-with-prefix
 # aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
 
-# aws s3 sync "s3://${S3_BUCKET:?}" ./uploaded-root
-# verify uploaded-root
+aws s3 sync "s3://${S3_BUCKET:?}" ./upload-public
+verify upload-public
 
 # Don't erase this "root" deployment; go check the HTTP headers.
 
