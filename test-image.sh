@@ -11,8 +11,8 @@ function make_source() {
   echo 'title = "My New Hugo Site"' > "${1:?}/config.toml"
 }
 
-make_source .        # "root" scenario; expect "public"
-make_source alt-src  # "alt-src" scenario; expect "alt-src/public"
+make_source .
+make_source alt-workspace
 
 
 ref="${GITHUB_REF:?}"
@@ -40,9 +40,8 @@ function verify() {
   echo -e "${ok:?}${1:?} OK"
 }
 
-verify public          # "root" scenario
-verify alt-src/public  # "alt-src" scenario
-verify alt-pub         # "alt-pub" scenario
+verify public                # "root" scenario
+verify alt-workspace/public  # "alt-workspace" scenario
 
 # verify custom-public
 # verify subdirectory/public
