@@ -48,7 +48,7 @@ htmlproofer "${pub:?}"      \
 
 echo -e "${ok:?} OK"
 
-if [ -n "${s3_bucket}" ]; then
+if [ -z "${s3_bucket}" ]; then
   exit 0
 fi
 
