@@ -40,15 +40,14 @@ services:
     volumes:
       - ./upload-workspace:/workspace
 
-  # upload_with_prefix:
-  #   command: >-
-  #     --s3-bucket ${S3_BUCKET}
-  #     --s3-prefix ${GITHUB_SHA}
-
-  #   image: cariad/hugo-ci:${BRANCH}
-  #   environment:
-  #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-  #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-  #   volumes:
-  #     - .:/src
-  #     - ./public-uploaded-with-prefix:/pub
+  # Maps the "upload-with-prefix-workspace" directory to the default workspace.
+  # Builds to "upload-with-prefix-workspace/public".
+  # This test should be verified by downloading the prefix content of the bucket.
+  upload-with-prefix:
+    command: --s3-bucket ${S3_BUCKET} --s3-prefix ${GITHUB_SHA}
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./upload-with-prefix-workspace:/workspace

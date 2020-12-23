@@ -15,7 +15,7 @@ make_source .
 make_source sub-workspace
 make_source alt-workspace
 make_source upload-workspace
-
+make_source upload-with-prefix-workspace
 
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
@@ -42,14 +42,13 @@ function verify() {
   echo -e "${ok:?}${1:?} OK"
 }
 
-verify public                # "root" scenario
-verify sub-workspace/public  # "sub-workspace" scenario
-verify alt-workspace/public  # "alt-workspace" scenario
+verify public
+verify sub-workspace/public
+verify alt-workspace/public
 
-
-# aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./public-with-prefix
-# verify public-with-prefix
-# aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
+aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./upload-with-prefix-public
+verify upload-with-prefix-public
+aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
 
 aws s3 sync "s3://${S3_BUCKET:?}" ./upload-public
 verify upload-public

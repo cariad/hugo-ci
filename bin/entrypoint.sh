@@ -91,7 +91,7 @@ echo -e "${li:?}S3 path: ${s3_path:?}"
 
 header_args=(-bucket "${s3_bucket:?}")
 
-usr_header_config="${src:?}/.s3headersetter.yml"
+usr_header_config="${workspace:?}/.s3headersetter.yml"
 sys_header_config=/config/.s3headersetter.yml
 
 if [ -f "${usr_header_config}" ]; then
