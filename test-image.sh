@@ -42,8 +42,8 @@ verify subdirectory/public
 
 bucket=hugoci-test-bucket-248eadwvcive
 
-aws s3 sync "s3://${bucket:?}/${GITHUB_SHA:?}" ./uploaded-subdirectory
-verify uploaded-subdirectory
+aws s3 sync "s3://${bucket:?}/${GITHUB_SHA:?}" ./uploaded-with-prefix
+verify uploaded-with-prefix
 aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}" --recursive
 
 aws s3 sync "s3://${bucket:?}" ./uploaded-root

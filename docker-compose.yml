@@ -30,7 +30,7 @@ services:
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     volumes:
       - .:/src
-      - ./public:/pub
+      - ./public-uploaded:/pub
 
   upload_with_prefix:
     command: >-
@@ -43,4 +43,4 @@ services:
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     volumes:
       - .:/src
-      - ./public:/pub
+      - ./public-uploaded-with-prefix:/pub
