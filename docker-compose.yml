@@ -9,47 +9,47 @@ services:
 
   alt-src:
     command: >-
-      --source /alt-src
+      --workspace /alt-src
     image: cariad/hugo-ci:${BRANCH}
     volumes:
       - ./alt-src:/alt-src
 
   alt-pub:
     command: >-
-      --public /alt-pub
+      --workspace /alt-pub
     image: cariad/hugo-ci:${BRANCH}
     volumes:
       - ./.:/workspace
       - ./alt-pub:/alt-pub
 
-  subdirectory:
-    image: cariad/hugo-ci:${BRANCH}
-    volumes:
-      - ./subdirectory:/src
-      - ./subdirectory/public:/pub
+  # subdirectory:
+  #   image: cariad/hugo-ci:${BRANCH}
+  #   volumes:
+  #     - ./subdirectory:/src
+  #     - ./subdirectory/public:/pub
 
-  upload:
-    command: >-
-      --s3-bucket ${S3_BUCKET}
-      --s3-region ${AWS_DEFAULT_REGION}
+  # upload:
+  #   command: >-
+  #     --s3-bucket ${S3_BUCKET}
+  #     --s3-region ${AWS_DEFAULT_REGION}
 
-    image: cariad/hugo-ci:${BRANCH}
-    environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - .:/src
-      - ./public-uploaded:/pub
+  #   image: cariad/hugo-ci:${BRANCH}
+  #   environment:
+  #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  #   volumes:
+  #     - .:/src
+  #     - ./public-uploaded:/pub
 
-  upload_with_prefix:
-    command: >-
-      --s3-bucket ${S3_BUCKET}
-      --s3-prefix ${GITHUB_SHA}
+  # upload_with_prefix:
+  #   command: >-
+  #     --s3-bucket ${S3_BUCKET}
+  #     --s3-prefix ${GITHUB_SHA}
 
-    image: cariad/hugo-ci:${BRANCH}
-    environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    volumes:
-      - .:/src
-      - ./public-uploaded-with-prefix:/pub
+  #   image: cariad/hugo-ci:${BRANCH}
+  #   environment:
+  #     - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+  #     - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  #   volumes:
+  #     - .:/src
+  #     - ./public-uploaded-with-prefix:/pub
