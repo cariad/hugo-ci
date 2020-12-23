@@ -25,6 +25,11 @@ while [[ $1 = -* ]]; do
     --s3-prefix)
       s3_prefix=${1:?}; shift;;
 
+    --s3-region)
+      AWS_DEFAULT_REGION=${1:?}
+      export AWS_DEFAULT_REGION
+      shift;;
+
     --source)
       src=${1:?}; shift;;
 
@@ -39,6 +44,7 @@ done
 
 echo -e "${li:?}Source path: ${src:?}"
 echo -e "${li:?}Public path: ${pub:?}"
+echo -e "${li:?}Region:      ${AWS_DEFAULT_REGION:?}"
 
 # Build:
 
