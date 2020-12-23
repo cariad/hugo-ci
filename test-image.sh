@@ -12,6 +12,7 @@ function make_source() {
 }
 
 make_source .
+make_source empty-args-workspace
 make_source sub-workspace
 make_source alt-workspace
 make_source upload-workspace
@@ -43,6 +44,7 @@ function verify() {
 }
 
 verify public
+verify empty-args-workspace/public
 verify sub-workspace/public
 verify alt-workspace/public
 

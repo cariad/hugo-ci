@@ -13,6 +13,23 @@ services:
     volumes:
       - .:/workspace
 
+  # This replicates the usage by cariad/hugo-ci-action with default values.
+  # Maps the "empty-args-workspace" directory to the default workspace.
+  # Builds to "empty-args-workspace/public".
+  empty-args:
+    command:
+      - --s3-bucket
+      -
+      - --s3-prefix
+      -
+      - --s3-region
+      -
+      - --workspace
+      -
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./empty-args-workspace:/workspace
+
   # Maps the "sub-workspace" directory to the default workspace.
   # Builds to "sub-workspace/public".
   sub-workspace:
@@ -23,7 +40,9 @@ services:
   # Maps the "alt-workspace" directory to the "/alt-workspace" workspace.
   # Builds to "alt-workspace/public".
   alt-workspace:
-    command: --workspace /alt-workspace
+    command:
+      - --workspace
+      - /alt-workspace
     image: cariad/hugo-ci:${BRANCH}
     volumes:
       - ./alt-workspace:/alt-workspace
@@ -32,7 +51,9 @@ services:
   # Builds to "upload-workspace/public".
   # Verify by downloading the root content of the bucket.
   upload:
-    command: --s3-bucket ${S3_BUCKET}
+    command:
+      - --s3-bucket
+      - ${S3_BUCKET}
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
@@ -44,7 +65,11 @@ services:
   # Builds to "upload-with-prefix-workspace/public".
   # Verify by downloading the prefix content of the bucket.
   upload-with-prefix:
-    command: --s3-bucket ${S3_BUCKET} --s3-prefix ${GITHUB_SHA}
+    command:
+      - --s3-bucket
+      - ${S3_BUCKET}
+      - --s3-prefix
+      - ${GITHUB_SHA}
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
