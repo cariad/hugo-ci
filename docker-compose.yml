@@ -8,7 +8,7 @@ services:
       - .:/src
       - ./public:/pub
 
-   root_custom_path:
+  root_custom_path:
     command: --public /custom-pub --source /custom-src
     image: cariad/hugo-ci:${BRANCH}
     volumes:
