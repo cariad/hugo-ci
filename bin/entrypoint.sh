@@ -107,13 +107,6 @@ fi
 
 echo -e "${li:?}s3headersetter arguments: ${header_args[*]}"
 
-# If this is a dry-run then stop now:
-
-if [ "${DEPLOY:=0}" == "1" ]; then
-  echo "This is a dry-run, so gracefully stopping now."
-  exit 0
-fi
-
 # Upload:
 
 echo -e "${li:?}Uploading…"
