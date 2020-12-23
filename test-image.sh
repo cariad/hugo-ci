@@ -4,17 +4,23 @@ li="\033[1;34m•\033[0m "  # List item
 nk="\033[0;31m⨯\033[0m "  # Not OK
 ok="\033[0;32m✔️\033[0m "  # OK
 
-bucket=hugoci-test-bucket-248eadwvcive
-
 echo -e "${li:?}Arranging tests…"
-echo 'title = "My New Hugo Site"' > config.toml
-mkdir subdirectory
-echo 'title = "My New Hugo Site"' > subdirectory/config.toml
+
+function make_source() {
+  mkdir -p "${1:?}"
+  echo 'title = "My New Hugo Site"' > "${1:?}/config.toml"
+}
+
+make_source .
+make_source sub-workspace
+make_source alt-workspace
+make_source upload-workspace
+make_source upload-with-prefix-workspace
 
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
 
-aws s3 rm "s3://${bucket:?}" --recursive
+aws s3 rm "s3://${S3_BUCKET:?}" --recursive
 
 echo -e "${li:?}Starting containers…"
 BRANCH="${branch:?}" docker-compose up
@@ -37,18 +43,16 @@ function verify() {
 }
 
 verify public
-verify subdirectory/public
+verify sub-workspace/public
+verify alt-workspace/public
 
-bucket=hugoci-test-bucket-248eadwvcive
+aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./upload-with-prefix-public
+verify upload-with-prefix-public
+aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
 
-aws s3 sync "s3://${bucket:?}/${GITHUB_SHA:?}" ./uploaded-subdirectory
-verify uploaded-subdirectory
-aws s3 rm "s3://${bucket:?}/${GITHUB_SHA:?}" --recursive
+aws s3 sync "s3://${S3_BUCKET:?}" ./upload-public
+verify upload-public
 
-aws s3 sync "s3://${bucket:?}" ./uploaded-root
-verify uploaded-root
-
-# I intentionally don't erase this "root" deployment so I can check the HTTP
-# headers.
+# Don't erase this "root" deployment; go check the HTTP headers.
 
 echo -e "${ok:?}OK!"

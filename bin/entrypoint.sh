@@ -1,50 +1,97 @@
 #!/bin/bash -e
 
+# Helpful constants:
+
 li="\033[1;34m•\033[0m "  # List item
 ok="\033[0;32m✔️\033[0m "  # OK
 
-src=${SOURCE:=/src}
-echo -e "${li:?}Source path: ${src:?}"
+# Read command line arguments:
 
-pub=${PUBLIC:=/pub}
-echo -e "${li:?}Public path: ${pub:?}"
+while [[ $1 = -* ]]; do
+  arg=$1; shift
 
-hugo --source "${src:?}" --destination "${pub:?}" --minify
+  case ${arg} in
+    --workspace)
+      workspace=${1:?}; shift;;
+
+    --s3-bucket)
+      s3_bucket=${1:?}; shift;;
+
+    --s3-prefix)
+      s3_prefix=${1:?}; shift;;
+
+    --s3-region)
+      AWS_DEFAULT_REGION=${1:?}
+      export AWS_DEFAULT_REGION
+      shift;;
+
+    *)
+      echo "Unexpected argument: ${arg}"
+      exit 1
+      ;;
+  esac
+done
+
+# Resolve defaults:
+
+if [ -z "${workspace}" ]; then
+  workspace=/workspace
+  echo -e "${li:?}Workspace: ${workspace:?} (default)"
+else
+  echo -e "${li:?}Workspace: ${workspace:?}"
+fi
+
+public="${workspace:?}/public"
+echo -e "${li:?}Public:    ${public:?}"
+echo -e "${li:?}Region:    ${AWS_DEFAULT_REGION:?}"
+
+# Build:
+
+hugo --source "${workspace:?}" --destination "${public:?}" --minify
+
+# Lint:
 
 echo -e "${li:?}Linting…"
-htmlproofer "${pub:?}"      \
-  --allow-hash-href         \
-  --check-favicon           \
-  --check-html              \
-  --check-img-http          \
-  --check-opengraph         \
-  --disable-external        \
-  --report-invalid-tags     \
-  --report-missing-names    \
-  --report-script-embeds    \
-  --report-missing-doctype  \
-  --report-eof-tags         \
+htmlproofer "${public:?}"  \
+  --allow-hash-href        \
+  --check-favicon          \
+  --check-html             \
+  --check-img-http         \
+  --check-opengraph        \
+  --disable-external       \
+  --report-invalid-tags    \
+  --report-missing-names   \
+  --report-script-embeds   \
+  --report-missing-doctype \
+  --report-eof-tags        \
   --report-mismatched-tags
 
 echo -e "${ok:?} OK"
 
-if [ "${S3_BUCKET:=}" == "" ]; then
+# If we have no hosting details then stop now:
+
+if [ -z "${s3_bucket}" ]; then
   exit 0
 fi
 
-echo -e "${li:?}S3 bucket: ${S3_BUCKET:?}"
-s3_path="s3://${S3_BUCKET:?}"
+# Build S3 path:
 
-if [ "${S3_PREFIX:=}" != "" ]; then
-  echo -e "${li:?}S3 prefix: ${S3_PREFIX:=}"
-  s3_path="s3://${S3_BUCKET:?}/${S3_PREFIX:?}"
+echo -e "${li:?}S3 bucket: ${s3_bucket:?}"
+
+s3_path="s3://${s3_bucket:?}"
+
+if [ -n "${s3_prefix}" ]; then
+  echo -e "${li:?}S3 prefix: ${s3_prefix:?}"
+  s3_path="s3://${s3_bucket:?}/${s3_prefix:?}"
 fi
 
 echo -e "${li:?}S3 path: ${s3_path:?}"
 
-header_args=(-bucket "${S3_BUCKET:?}")
+# Build s3headersetter arguments:
 
-usr_header_config="${src:?}/.s3headersetter.yml"
+header_args=(-bucket "${s3_bucket:?}")
+
+usr_header_config="${workspace:?}/.s3headersetter.yml"
 sys_header_config=/config/.s3headersetter.yml
 
 if [ -f "${usr_header_config}" ]; then
@@ -53,21 +100,22 @@ else
   header_args+=(-config "${sys_header_config}")
 fi
 
-if [ "${S3_PREFIX:=}" != "" ]; then
-  header_args+=(-key-prefix "${S3_PREFIX:?}")
+if [ -n "${s3_prefix}" ]; then
+  header_args+=(-key-prefix "${s3_prefix:?}")
 fi
 
 echo -e "${li:?}s3headersetter arguments: ${header_args[*]}"
 
-if [ "${DEPLOY:=0}" == "1" ]; then
-  echo "This is a dry-run, so gracefully stopping now."
-  exit 0
-fi
+# Upload:
 
 echo -e "${li:?}Uploading…"
-aws s3 sync --delete "${pub:?}" "${s3_path:?}"
+aws s3 sync --delete "${public:?}" "${s3_path:?}"
+
+# Set HTTP headers:
 
 echo -e "${li:?}Setting HTTP headers…"
 s3headersetter "${header_args[@]}"
+
+# Done!
 
 echo -e "${ok:?}OK"
