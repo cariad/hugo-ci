@@ -37,6 +37,7 @@ function verify() {
 }
 
 verify public
+verify custom-public
 verify subdirectory/public
 
 bucket=hugoci-test-bucket-248eadwvcive
