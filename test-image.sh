@@ -21,7 +21,8 @@ make_source upload-with-prefix-workspace
 ref="${GITHUB_REF:?}"
 branch="${ref##*/}"
 
-aws s3 rm "s3://${S3_BUCKET:?}" --recursive
+aws s3 rm "s3://${PREFIX_TEST_BUCKET:?}" --recursive
+aws s3 rm "s3://${ROOT_TEST_BUCKET:?}"   --recursive
 
 echo -e "${li:?}Starting containers…"
 BRANCH="${branch:?}" docker-compose up
@@ -48,13 +49,10 @@ verify empty-args-workspace/public
 verify sub-workspace/public
 verify alt-workspace/public
 
-aws s3 sync "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" ./upload-with-prefix-public
-verify upload-with-prefix-public
-aws s3 rm "s3://${S3_BUCKET:?}/${GITHUB_SHA:?}" --recursive
-
-aws s3 sync "s3://${S3_BUCKET:?}" ./upload-public
+aws s3 sync "s3://${ROOT_TEST_BUCKET:?}"                   ./upload-public
 verify upload-public
 
-# Don't erase this "root" deployment; go check the HTTP headers.
+aws s3 sync "s3://${PREFIX_TEST_BUCKET:?}/${GITHUB_SHA:?}" ./upload-with-prefix-public
+verify upload-with-prefix-public
 
-echo -e "${ok:?}OK!"
+echo -e "${ok:?}All tests passed"
