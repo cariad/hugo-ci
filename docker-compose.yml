@@ -13,6 +13,15 @@ services:
     volumes:
       - .:/workspace
 
+  # This replicates the usage by cariad/hugo-ci-action with default values.
+  # Maps the "empty-args-workspace" directory to the default workspace.
+  # Builds to "empty-args-workspace/public".
+  empty-args:
+    command: --s3-bucket "" --s3-prefix "" --s3-region "" --workspace ""
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./empty-args-workspace:/workspace
+
   # Maps the "sub-workspace" directory to the default workspace.
   # Builds to "sub-workspace/public".
   sub-workspace:

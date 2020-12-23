@@ -12,17 +12,19 @@ while [[ $1 = -* ]]; do
 
   case ${arg} in
     --workspace)
-      workspace=${1:?}; shift;;
+      [ -n "${1}" ] && workspace=${1:?}
+      shift;;
 
     --s3-bucket)
-      s3_bucket=${1:?}; shift;;
+      [ -n "${1}" ] && s3_bucket=${1:?}
+      shift;;
 
     --s3-prefix)
-      s3_prefix=${1:?}; shift;;
+      [ -n "${1}" ] && s3_prefix=${1:?}
+      shift;;
 
     --s3-region)
-      AWS_DEFAULT_REGION=${1:?}
-      export AWS_DEFAULT_REGION
+      [ -n "${1}" ] && AWS_DEFAULT_REGION=${1:?} && export AWS_DEFAULT_REGION
       shift;;
 
     *)
