@@ -15,13 +15,14 @@
 
 ### Arguments
 
-| Argument      | Description                               | Default     |
-|---------------|-------------------------------------------|-------------|
-| `--public`    | Path _within the container_ to build to   | `/pub`      |
-| `--s3-bucket` | S3 bucket to upload to                    | _No upload_ |
-| `--s3-prefix` | S3 prefix to upload to                    | _No prefix_ |
-| `--s3-region` | S3 bucket region                          | `us-east-1` |
-| `--source`    | Path _within the container_ to build from | `/src`      |
+| Argument      | Description                               | Default      |
+|---------------|-------------------------------------------|--------------|
+| `--s3-bucket` | S3 bucket to upload to                    | _No upload_  |
+| `--s3-prefix` | S3 prefix to upload to                    | _No prefix_  |
+| `--s3-region` | S3 bucket region                          | `us-east-1`  |
+| `--workspace` | Path _within the container_ to build from | `/workspace` |
+
+The site will be built to the `public` directory of the workspace.
 
 ### Environment variables
 
@@ -52,10 +53,9 @@ If you don’t create `.s3headersetter.yml` then the following defaults will tak
 ### Build and test your local development project
 
 ```bash
-docker run                                             \
-  --mount "type=bind,source=$(pwd),target=/src"        \
-  --mount "type=bind,source=$(pwd)/public,target=/pub" \
-  --rm                                                 \
+docker run                                            \
+  --mount "type=bind,source=$(pwd),target=/workspace" \
+  --rm                                                \
   cariad/hugo-ci
 ```
 
@@ -68,8 +68,6 @@ docker run                                                     \
   --mount     "type=bind,source=$(pwd),target=/workspace"      \
   --rm                                                         \
   cariad/hugo-ci                                               \
-  --source    /workspace                                       \
-  --public    /workspace/public                                \
   --s3-bucket mybucket
 ```
 
