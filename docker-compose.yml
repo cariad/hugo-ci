@@ -8,6 +8,13 @@ services:
       - .:/src
       - ./public:/pub
 
+   root_custom_path:
+    command: --public /custom-pub --source /custom-src
+    image: cariad/hugo-ci:${BRANCH}
+    volumes:
+      - ./:/custom-src
+      - ./custom-public:/custom-pub
+
   subdirectory:
     image: cariad/hugo-ci:${BRANCH}
     volumes:
@@ -15,23 +22,23 @@ services:
       - ./subdirectory/public:/pub
 
   upload:
+    command: --s3_bucket hugoci-test-bucket-248eadwvcive
     image: cariad/hugo-ci:${BRANCH}
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - S3_BUCKET=hugoci-test-bucket-248eadwvcive
     volumes:
       - .:/src
       - ./public:/pub
 
   upload_with_prefix:
+    command: --s3_bucket hugoci-test-bucket-248eadwvcive
     image: cariad/hugo-ci:${BRANCH}
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - S3_BUCKET=hugoci-test-bucket-248eadwvcive
       - S3_PREFIX=${GITHUB_SHA}
     volumes:
       - .:/src
