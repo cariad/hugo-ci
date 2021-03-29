@@ -2,12 +2,27 @@ rules:
   - header: Cache-Control
     when:
       - extension: .html
-        then: max-age=3600, public
-      - extension: .css
-        then: max-age=604800, public
-    else: max-age=31536000, public
+        then: max-age=600, public  # 10 minutes
+      - extension: xml  # i.e. RSS
+        then: max-age=600, public  # 10 minutes
+    else: max-age=31536000, public  # 1 year
 
   - header: Content-Type
     when:
+      - extension: .eot
+        then: application/vnd.ms-fontobject
+
+      - extension: .html
+        then: text/html
+
+      - extension: .ttf
+        then: font/ttf
+
+      - extension: .woff
+        then: font/woff
+
       - extension: .woff2
         then: font/woff2
+
+      - extension: .xml
+        then: text/xml
