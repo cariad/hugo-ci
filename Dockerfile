@@ -18,7 +18,7 @@ RUN apt-get update                                  && \
 ENV HTMLPROOFER_VERSION 3.18.2
 RUN gem install html-proofer:"${HTMLPROOFER_VERSION:?}" --no-document
 
-ENV HUGO_VERSION 0.79.1
+ENV HUGO_VERSION 0.82.0
 ADD https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz /tmp/hugo.tar.gz
 RUN tar xzf /tmp/hugo.tar.gz --directory /usr/local/bin hugo && \
     rm /tmp/hugo.tar.gz                                      && \
@@ -43,7 +43,7 @@ COPY keys/aws-cli.pub /tmp/aws-cli.pub
 RUN gpg --import /tmp/aws-cli.pub && \
     rm -rf /tmp/*
 
-ENV AWS_VERSION 2.1.13
+ENV AWS_VERSION 2.1.33
 ADD https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_VERSION}.zip     /tmp/aws.zip
 ADD https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_VERSION}.zip.sig /tmp/aws.zip.sig
 RUN gpg --verify /tmp/aws.zip.sig /tmp/aws.zip && \
