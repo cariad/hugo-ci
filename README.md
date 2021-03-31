@@ -42,11 +42,14 @@ To set custom HTTP headers:
 
 If you don’t create `.s3headersetter.yml` then the following defaults will take effect:
 
-| File pattern | `Cache-Control`          | `Content-Type` |
-|--------------|--------------------------|----------------|
-| `.html`      | `max-age=3600, public`   | _Defer to S3_  |
-| `.css`       | `max-age=604800, public` | _Defer to S3_  |
-| `.woff2`     | _Defer to S3_            | `font/woff2`   |
+| File pattern | `Cache-Control`            | `Content-Type`                 |
+|--------------|----------------------------|--------------------------------|
+| `.eot`       | `max-age=31536000, public` | `application/vnd.ms-fontobject`|
+| `.html`      | `max-age=600, public`      | `text/html`                    |
+| `.ttf`       | `max-age=31536000, public` | `font/ttf`                     |
+| `.woff`      | `max-age=31536000, public` | `font/woff`                    |
+| `.woff2`     | `max-age=31536000, public` | `font/woff2`                   |
+| `.xml`       | `max-age=600, public`      | `text/xml`                     |
 
 ## Examples
 
@@ -80,3 +83,11 @@ Check out my _Hugo CI_ GitHub Action: [github.com/cariad/hugo-ci-action](https:/
 - ❤️ [github.com/gohugoio/hugo](https://github.com/gohugoio/hugo)
 - ❤️ [github.com/gjtorikian/html-proofer)](https://github.com/gjtorikian/html-proofer)
 - 👩🏼‍💻 [github.com/cariad/s3headersetter](https://github.com/cariad/s3headersetter)
+
+## Hello there! 🎉
+
+My name's **Cariad**, and I'm an [freelance DevOps engineer](https://cariad.io).
+
+I'd love to spend more time working on open source projects, but I need to chase gigs that pay the rent. If this project has value to you, please consider [☕️ sponsoring](https://github.com/sponsors/cariad) me.
+
+Thank you! ❤️

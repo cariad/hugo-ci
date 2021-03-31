@@ -24,10 +24,14 @@ fi
 
 echo -e "${ok:?}${found:?} scripts validated"
 
-
 ################################################################################
 # TEST YAML
 
-pipenv sync --bare --dev > /dev/null
-pipenv run yamllint . --strict
+yamllint . --strict
 echo -e "${ok:?}YAML OK"
+
+################################################################################
+# TEST DOCKERFILE
+
+hadolint Dockerfile
+echo -e "${ok:?}Dockerfile OK"
